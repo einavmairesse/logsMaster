@@ -1,14 +1,13 @@
-# App (Broken, needs to be fix)
-    docker build -t logs-master-app .
-    docker run -d -p 5000:5000 --name app logs-master-app
-
 # Run Elasticsearch instance
     docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --name es docker.elastic.co/elasticsearch/elasticsearch:6.8.12
 
 # MySQL db
     docker run --name logs-master-db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mysql:8.0.21
 
-
+# App
+    docker build -t logs-master-app .
+    docker run -d -p 5000:5000 --name app logs-master-app
+ 
 ## How To Run:
 1. Run Elasticsearch container
 
