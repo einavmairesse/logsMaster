@@ -1,8 +1,8 @@
 ES_HOSTS = [
-    {'host': '0.0.0.0', 'port': 9200}
+    {'host': '18.223.164.86', 'port': 9200}
 ]
 
-DB_HOST = '0.0.0.0'
+DB_HOST = '18.191.85.229'
 DB_USER = 'root'
 DB_PASSWORD = 'password'
 DB_PORT = 3306
