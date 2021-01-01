@@ -1,10 +1,4 @@
-
 import paramiko
-
-
-# client.containers.run("docker.elastic.co/elasticsearch/elasticsearch:6.8.12", None,
-#                      ports={'9200/tcp': 9200, '9300/tcp': 9300}, name="es",
-#                      environment=['ES_JAVA_OPTS="-Xms100m -Xmx100m"', 'discovery.type=single-node'])
 
 
 def install_docker(ssh_client):
@@ -25,18 +19,12 @@ def run_es_container(ssh_client):
     remove_containers = ssh_client.exec_command("sudo docker rm $(sudo docker ps -a)", get_pty=True)
     remove_containers_status = remove_containers[1].channel.recv_exit_status()
 
-    docker_run_es_container = ssh_client.exec_command("sudo docker run -p 9200:9200 -p 9300:9300 -e ES_JAVA_OPTS=\"-Xms100m -Xmx100m\""
-                                    " -e \"discovery.type=single-node\" "
-                                    "--name es docker.elastic.co/elasticsearch/elasticsearch:6.8.12 &",
-                                    get_pty=True)
+    docker_run_es_container = ssh_client.exec_command(
+        "sudo docker run -p 9200:9200 -p 9300:9300 -e ES_JAVA_OPTS=\"-Xms100m -Xmx100m\""
+        " -e \"discovery.type=single-node\" "
+        "--name es docker.elastic.co/elasticsearch/elasticsearch:6.8.12 &",
+        get_pty=True)
 
-    #command1 = "sudo docker run -p 9200:9200 -p 9300:9300 -e ES_JAVA_OPTS=\"-Xms100m -Xmx100m "
-    #command2 = "-e"
-    #command3 = " \"discovery.type=single-node\""
-    #command4 = " --name es docker.elastic.co/elasticsearch/elasticsearch:6.8.12"
-    #command = command1 + command2 + command3 + command4
-
-    #docker_run_es_container = ssh_client.exec_command(command, get_pty=True)
     run_es_container_status = docker_run_es_container[1].channel.recv_exit_status()
 
     for_print = ssh_client.exec_command("sudo docker ps", get_pty=True)
@@ -64,4 +52,3 @@ class ESInit:
         print("docker is installed")
         run_es_container_result = run_es_container(ssh)
         print("container running")
-
