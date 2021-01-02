@@ -45,6 +45,9 @@ def clone_app_to_server(ssh_client):
     clone_app = ssh_client.exec_command("git clone https://github.com/einavmairesse/logsMaster", get_pty=True)
     clone_app_status = clone_app[1].channel.recv_exit_status()
 
+    cd_logsmaster = ssh_client.exec_command("cd logsMaster", get_pty=True)
+    cd_logsmaster_result = cd_logsmaster[1].channel.recv_exit_status()
+
     temp_command_checkout = ssh_client.exec_command("git checkout automate-application-deployment", get_pty=True)
     temp_command_checkout_result = temp_command_checkout[1].channel.recv_exit_status()
 
