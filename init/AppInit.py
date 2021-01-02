@@ -13,14 +13,14 @@ def install_docker(ssh_client):
 
 
 def run_app_container(ssh_client):
-    stop_running_containers = ssh_client.exec_command("sudo docker stop $(sudo docker ps -a)", get_pty=True)
-    stop_running_containers_ststus = stop_running_containers[1].channel.recv_exit_status()
+    stop_running_containers = ssh_client.exec_command("sudo docker stop app", get_pty=True)
+    stop_running_containers_status = stop_running_containers[1].channel.recv_exit_status()
 
-    remove_containers = ssh_client.exec_command("sudo docker rm $(sudo docker ps -a)", get_pty=True)
+    remove_containers = ssh_client.exec_command("sudo docker rm app", get_pty=True)
     remove_containers_status = remove_containers[1].channel.recv_exit_status()
 
     docker_run_es_container = ssh_client.exec_command(
-        "sudo docker run -d -p 5000:5000 --name app logs-master-app" ,get_pty=True)
+        "sudo docker run -d -p 5000:5000 --name app logs-master-app", get_pty=True)
 
     run_es_container_status = docker_run_es_container[1].channel.recv_exit_status()
 
@@ -44,6 +44,10 @@ def build_app_image(ssh_client):
 def clone_app_to_server(ssh_client):
     clone_app = ssh_client.exec_command("git clone https://github.com/einavmairesse/logsMaster", get_pty=True)
     clone_app_status = clone_app[1].channel.recv_exit_status()
+
+    temp_command_checkout = ssh_client.exec_command("git checkout automate-application-deployment", get_pty=True)
+    temp_command_checkout_result = temp_command_checkout[1].channel.recv_exit_status()
+
     return clone_app_status
 
 
