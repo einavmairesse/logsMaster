@@ -1,8 +1,12 @@
-import docker
+import logging
 
 import paramiko as paramiko
 
 from init.AWSHelper import AWSHelper
+import logging
+
+file_name = "MsqlInit.log"
+logging.basicConfig(filename=file_name, level=logging.INFO)
 
 
 class DBInit:
@@ -10,19 +14,22 @@ class DBInit:
         self.ip = ip
 
     def start_db(self):
-        print("starts db")
+        logging.info("Starting to initialize server")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         privkey = paramiko.RSAKey.from_private_key_file('key')
 
-        ssh.connect(hostname=self.ip, username='ubuntu', pkey=privkey, timeout=20)
+        try:
+            ssh.connect(hostname=self.ip, username='ubuntu', pkey=privkey, timeout=20)
+        except TimeoutError as e:
+            logging.error("An error occur while trying to connect to Mysql instances: %s", e)
+            exit(-1)
 
-        print("connected to db")
-        install_docker_result = AWSHelper.install_docker(ssh)
-        print("docker is installed")
+        logging.info("Connected to Mysql instance")
+
+        install_docker_result = AWSHelper.install_docker(ssh, file_name)
         run_sql_container_result = self.run_sql_container(ssh)
-        print("container running")
 
     def run_sql_container(self, ssh_client):
         first = ssh_client.exec_command(
